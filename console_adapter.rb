@@ -4,7 +4,9 @@ class ConsoleAdapter < OutputAdapter
     DEFAULT_chosen_option = 1000
     PROMPT = ">> "
 
-    def generate_menu(title, return_states_and_msgs)
+    def generate_menu(title:, return_states_and_msgs:)
+        puts
+        puts "********************************************************"
         puts "*** #{title.upcase} ***"
         chosen_option = DEFAULT_chosen_option
 
@@ -24,7 +26,9 @@ class ConsoleAdapter < OutputAdapter
         return_states_and_msgs.keys[chosen_option]
     end
 
-    def insert_view(title, field_names)
+    def generate_insert_view(title:, field_names:)
+        puts
+        puts "********************************************************"
         puts "*** #{title.upcase} ***"
 
         field_names.map do |field|
@@ -36,12 +40,14 @@ class ConsoleAdapter < OutputAdapter
         end.to_h
     end
 
-    def generate_info_view(title, info)
+    def generate_info_view(title:, msg:)
+        puts
+        puts "********************************************************"
         puts "*** #{title.upcase} ***"
         puts
-        puts info
+        puts msg
         puts
-        puts "Prosze przycisnąć enter by zamknąć"
+        puts "Prosze nacisnąć enter by zamknąć"
         gets
         nil
     end
