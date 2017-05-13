@@ -24,4 +24,6 @@ end
 
 # ConsoleAdapter
 console = ConsoleAdapter.new
-p console.generate_main_menu({1 => "opcja pierwsza", 2 => "opcja druga"})
+p console.generate_menu("MANU GŁÓWNE", {1 => "opcja pierwsza", 2 => "opcja druga"})
+p console.insert_view("LOGOWANIE UŻYTKOWNIKA", ["numer konta", "hasło", "numer konta do przelewu", "kwota"])
+p console.generate_info_view("Koniec tutoriala", "Wszystko bardzo proste w obsłudze")

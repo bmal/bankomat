@@ -4,11 +4,12 @@ class ConsoleAdapter < OutputAdapter
     DEFAULT_chosen_option = 1000
     PROMPT = ">> "
 
-    def generate_main_menu(return_states_and_msgs)
-        puts "*** MENU GŁÓWNE ***"
+    def generate_menu(title, return_states_and_msgs)
+        puts "*** #{title.upcase} ***"
         chosen_option = DEFAULT_chosen_option
 
-        until valid?(expected: (0...return_states_and_msgs.size), actual: chosen_option)
+        until valid_user_responce?(expected: (0...return_states_and_msgs.size), actual: chosen_option)
+            puts
             puts "Proszę wybrać opcję:"
 
             return_states_and_msgs.each.with_index do |(_, msg), index|
@@ -23,8 +24,30 @@ class ConsoleAdapter < OutputAdapter
         return_states_and_msgs.keys[chosen_option]
     end
 
+    def insert_view(title, field_names)
+        puts "*** #{title.upcase} ***"
+
+        field_names.map do |field|
+            puts
+            puts "Podaj #{field}:"
+
+            print PROMPT
+            [field, gets.strip]
+        end.to_h
+    end
+
+    def generate_info_view(title, info)
+        puts "*** #{title.upcase} ***"
+        puts
+        puts info
+        puts
+        puts "Prosze przycisnąć enter by zamknąć"
+        gets
+        nil
+    end
+
     private
-    def valid?(expected:, actual:)
+    def valid_user_responce?(expected:, actual:)
         expected.include? actual
     end
 end

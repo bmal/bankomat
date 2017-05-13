@@ -1,9 +1,7 @@
 require 'abstract_method'
 
 class OutputAdapter
-    abstract_method :generate_main_menu,
-                    :generate_account_menu,
-                    :generate_balance_view,
-                    :generate_cash_out_view,
-                    :generate_transfer_view
+    abstract_method :generate_menu, #menu główne, menu konta, menu z kwotami wypłaty
+                    :insert_view, #logowanie użytkownika oraz przelew do innego uzytkownika
+                    :generate_info_view #stan konta, udane i nieudane logowanie, informacje o wybranej opcji, itd.
 end
