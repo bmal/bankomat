@@ -24,3 +24,4 @@ end
 
 # ConsoleAdapter
 console = ConsoleAdapter.new
+p console.generate_main_menu({1 => "opcja pierwsza", 2 => "opcja druga"})

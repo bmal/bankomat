@@ -24,7 +24,7 @@ class Accounts
     private
     def generate_unique_account_number
         account_number = generate_account_number
-        unless unique? account_number
+        until unique? account_number 
             account_number = generate_account_number
         end
 
@@ -36,6 +36,6 @@ class Accounts
     end
 
     def unique?(account_number)
-        @accounts.keys.include? account_number
+        !@accounts.keys.include? account_number
     end
 end
