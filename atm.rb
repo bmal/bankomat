@@ -3,10 +3,10 @@ require_relative 'accounts'
 require_relative 'console_adapter'
 
 # User
-user1 = User.new(name: "Daniel", surname: "Wawrzyńczyk")
+user1 = User.new(name: "Daniel", surname: "Wawrzyńczyk", password: "matrix111")
 user1.balance += 100
 
-user2 = User.new(name: "Donald", surname: "Kaczor")
+user2 = User.new(name: "Donald", surname: "Kaczor", password: "qwerty")
 user2.balance = 132
 
 # Accounts
