@@ -6,16 +6,14 @@ require_relative 'state'
 
 class ATM
     def initialize
-        @console = ConsoleAdapter.new
-        @accounts = Accounts.instance
-        @state_factory = StateFactory.new
+        @state_factory = StateFactory.new(ConsoleAdapter.new, Accounts)
         @state = @state_factory.logged_out_state
         @logged_user = nil
     end
 
     def run_loop
         while true do
-            handle_request(@state.receive_request(@console, @accounts, @logged_user))
+            handle_request(@state.receive_request(@logged_user))
         end
     end
 
@@ -30,29 +28,29 @@ class ATM
     def handle_logged_user(request)
         p request
         case request
-        when nil then
+        when nil
             @state = @state_factory.logged_in_state
-        when :cancel_request then
+        when :cancel_request
             @logged_user = nil
             @state = @state_factory.ending_state
-        when :deposite_request then
+        when :deposite_request
             @state = @state_factory.deposite_in_state
-        when :withdraw_request then
+        when :withdraw_request
             @state = @state_factory.withdraw_out_state
-        when :transfer_request then
+        when :transfer_request
             @state = @state_factory.transfer_state
         end
     end
 
     def handle_unlogged_user(request)
         case request
-        when nil then
+        when nil
             @state = @state_factory.logged_out_state
-        when :cancel_request then
+        when :cancel_request
             @state = @state_factory.ending_state
-        when :loggin_request then
+        when :loggin_request
             @state = @state_factory.attempt_to_logged_in_state
-        when :user_creation_request then
+        when :user_creation_request
             @state = @state_factory.user_creation_state
         else
             @logged_user = request
