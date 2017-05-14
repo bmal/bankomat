@@ -1,30 +1,67 @@
 require_relative 'user'
 require_relative 'accounts'
 require_relative 'console_adapter'
+require_relative 'state'
 
-# User
-user1 = User.new(name: "Daniel", surname: "Wawrzyńczyk", password: "matrix111")
-user1.balance += 100
 
-user2 = User.new(name: "Donald", surname: "Kaczor", password: "qwerty")
-user2.balance = 132
+class ATM
+    def initialize
+        @console = ConsoleAdapter.new
+        @accounts = Accounts.instance
+        @state_factory = StateFactory.new
+        @state = @state_factory.logged_out_state
+        @logged_user = nil
+    end
 
-# Accounts
-accounts = Accounts.instance
-user1_account_number = accounts.add_account_and_return_its_number(user1)
-accounts.add_account_and_return_its_number(user2)
+    def run_loop
+        while true do
+            handle_request(@state.receive_request(@console, @accounts, @logged_user))
+        end
+    end
 
-_, found_user = accounts.find { |account_number, _| account_number == user1_account_number }
-puts "Właściciel numeru konta #{user1_account_number} to #{found_user.name} #{found_user.surname}. Jego stan konta to #{found_user.balance}."
+    private
+    def handle_request(request)
+        if @logged_user == nil
+            handle_unlogged_user(request)
+        else
+            handle_logged_user(request)
+        end
+    end
+    def handle_logged_user(request)
+        p request
+        case request
+        when nil then
+            @state = @state_factory.logged_in_state
+        when :cancel_request then
+            @logged_user = nil
+            @state = @state_factory.ending_state
+        when :deposite_request then
+            @state = @state_factory.deposite_in_state
+        when :withdraw_request then
+            @state = @state_factory.withdraw_out_state
+        when :transfer_request then
+            @state = @state_factory.transfer_state
+        end
+    end
 
-puts "Wszyscy użytkownicy:"
-accounts.each do |account_number, user_data|
-    puts "#{account_number}; #{user_data.name} #{user_data.surname}; #{user_data.balance}"
+    def handle_unlogged_user(request)
+        case request
+        when nil then
+            @state = @state_factory.logged_out_state
+        when :cancel_request then
+            @state = @state_factory.ending_state
+        when :loggin_request then
+            @state = @state_factory.attempt_to_logged_in_state
+        when :user_creation_request then
+            @state = @state_factory.user_creation_state
+        else
+            @logged_user = request
+            @state = @state_factory.logged_in_state
+        end
+    end
 end
 
-# ConsoleAdapter
-# zobacz output_adapter.rb. Opisałem tam zastosowania każdego rodzaju printu
-console = ConsoleAdapter.new
-p console.generate_menu(title: "MANU GŁÓWNE", return_states_and_msgs: {1 => "opcja pierwsza", 2 => "opcja druga"})
-p console.generate_insert_view(title: "LOGOWANIE UŻYTKOWNIKA", field_names: ["numer konta", "hasło", "numer konta do przelewu", "kwota"])
-p console.generate_info_view(title: "Koniec tutoriala", msg: "Wszystko bardzo proste w obsłudze")
+
+atm = ATM.new.run_loop
+
+

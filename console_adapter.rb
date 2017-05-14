@@ -47,7 +47,7 @@ class ConsoleAdapter < OutputAdapter
         puts
         puts msg
         puts
-        puts "Prosze nacisnąć enter by zamknąć"
+        puts "Prosze nacisnąć enter by kontynuować"
         gets
         nil
     end
